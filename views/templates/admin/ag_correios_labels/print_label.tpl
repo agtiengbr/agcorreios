@@ -1,0 +1,1 @@
+<a href='{$url}' class="btn btn-default"><i class="icon icon-print"></i> Imprimir</a>

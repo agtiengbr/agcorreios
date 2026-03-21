@@ -1,0 +1,8 @@
+services:
+  _defaults:
+      public: true
+      
+  AGTI\Correios\Infrastructure\Repository\Configuration:
+    class: AGTI\Correios\Infrastructure\Repository\Configuration
+    arguments:
+      - '@agti.correios.infrastructure.serializer.serializer'

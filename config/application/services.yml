@@ -1,0 +1,52 @@
+services:
+  _defaults:
+      public: true
+      
+  AGTI\Correios\Application\Service\TokenRetriever:
+    class: AGTI\Correios\Application\Service\TokenRetriever
+    arguments:
+      - '@AGTI\Correios\Infrastructure\API\Remote\Autentica\CartaoDePostagem\AutenticaCartaoDePostagemService'
+
+  AGTI\Correios\Application\Service\PrazoNacional:
+    class: AGTI\Correios\Application\Service\PrazoNacional
+    arguments:
+      - '@AGTI\Correios\Infrastructure\API\Remote\Prazo\Nacional\PrazoNacionalService'
+
+  AGTI\Correios\Application\Service\PrecoNacional:
+    class: AGTI\Correios\Application\Service\PrecoNacional
+    arguments:
+      - '@AGTI\Correios\Infrastructure\API\Remote\Preco\Nacional\PrecoNacionalService'
+      
+  AGTI\Correios\Application\Service\TrackingObjects:
+    class: AGTI\Correios\Application\Service\TrackingObjects
+    arguments:
+      - '@AGTI\Correios\Infrastructure\API\Remote\Rastro\Objetos\RastrearObjetosService'
+
+  AGTI\Correios\Application\Service\UpdateStatusByEvent:
+    class: AGTI\Correios\Application\Service\UpdateStatusByEvent
+
+  AGTI\Correios\Application\Service\CreateConcilRowsFromFile:
+    class: AGTI\Correios\Application\Service\CreateConcilRowsFromFile
+
+
+  AGTI\Correios\Application\Service\CriarPrePostagem:
+    class: AGTI\Correios\Application\Service\CriarPrePostagem
+    arguments:
+      - '@AGTI\Correios\Infrastructure\API\Remote\Prepostagem\CriarPrepostagem\CriarPrepostagemService'
+      - '@AGTI\Correios\ValueObject\Configuration'
+      - '@doctrine.orm.entity_manager'
+      - '@AGTI\Correios\Infrastructure\Mapping\MappingAdapter'
+
+  AGTI\Correios\Application\Service\GeraPdfEtiquetas:
+    class: AGTI\Correios\Application\Service\GeraPdfEtiquetas
+    arguments:
+      - '@AGTI\Correios\Infrastructure\API\Remote\Prepostagem\CriarRotulo\CriarRotuloService'
+      - '@AGTI\Correios\Infrastructure\API\Remote\Prepostagem\ConsultaRotulo\ConsultaRotuloService'
+      - '@AGTI\Correios\ValueObject\Configuration'
+
+
+  AGTI\Correios\Application\Service\BuscaServicos:
+    class: AGTI\Correios\Application\Service\BuscaServicos
+    arguments:
+      - '@AGTI\Correios\Infrastructure\API\Remote\Contrato\ContratoService'
+      - '@AGTI\Correios\ValueObject\Configuration'

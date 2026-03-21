@@ -1,0 +1,22 @@
+imports:
+  - { resource: api.yml }
+  - { resource: repository.yml }
+
+services:
+  _defaults:
+      public: true
+      
+  agti.correios.infrastructure.symfony.curl_http_client:
+    class: Symfony\Component\HttpClient\CurlHttpClient
+
+  agti.correios.infrastructure.symfony.stopwatch:
+    class: Symfony\Component\Stopwatch\Stopwatch
+
+  agti.correios.infrastructure.serializer.serializer:
+    class: Symfony\Component\Serializer\Serializer 
+    factory: ['AGTI\Correios\Infrastructure\Serializer\Serializer', 'buildSerializer']
+
+  AGTI\Correios\Infrastructure\Mapping\MappingAdapter:
+    class: AGTI\Correios\Infrastructure\Mapping\MappingAdapter
+    arguments:
+      - '@AGTI\Correios\ValueObject\Mappings'
