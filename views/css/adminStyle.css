@@ -1,0 +1,25 @@
+.agcorreios-label-error:empty,
+.agcorreios-label-success:empty {
+    display: none;
+}
+
+.dropdown-menu>li>a {
+    display: block;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857;
+    color: #333;
+    white-space: nowrap;
+    padding: 5px 10px;
+    text-decoration: none;
+}
+
+.label-listing .dropdown-menu>li>a:hover {
+    text-decoration: none;
+    color: #fff;
+    background-color: #25b9d7;
+}
+
+.label-listing .show>.btn-default.dropdown-toggle {
+    color: white;
+}

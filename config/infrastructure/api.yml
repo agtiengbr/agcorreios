@@ -1,0 +1,65 @@
+services:
+  _defaults:
+    public: true
+      
+  AGTI\Correios\Infrastructure\API\Remote\BaseService:
+    class: AGTI\Correios\Infrastructure\API\Remote\BaseService
+    abstract: true
+    arguments:
+      - '@agti.correios.infrastructure.serializer.serializer'
+
+  AGTI\Correios\Infrastructure\API\Remote\Autentica\CartaoDePostagem\AutenticaCartaoDePostagemService:
+    class: AGTI\Correios\Infrastructure\API\Remote\Autentica\CartaoDePostagem\AutenticaCartaoDePostagemService
+    parent: AGTI\Correios\Infrastructure\API\Remote\BaseService
+    public: true
+
+  AGTI\Correios\Infrastructure\API\Remote\Preco\Nacional\PrecoNacionalService:
+    class: AGTI\Correios\Infrastructure\API\Remote\Preco\Nacional\PrecoNacionalService
+    parent: AGTI\Correios\Infrastructure\API\Remote\BaseService
+    public: true
+
+  AGTI\Correios\Infrastructure\API\Remote\Prazo\Nacional\PrazoNacionalService:
+    class: AGTI\Correios\Infrastructure\API\Remote\Prazo\Nacional\PrazoNacionalService
+    parent: AGTI\Correios\Infrastructure\API\Remote\BaseService
+    public: true
+
+  AGTI\Correios\Infrastructure\API\Remote\Rastro\Objetos\RastrearObjetosService:
+    class: AGTI\Correios\Infrastructure\API\Remote\Rastro\Objetos\RastrearObjetosService
+    parent: AGTI\Correios\Infrastructure\API\Remote\BaseService
+    public: true
+
+  AGTI\Correios\Infrastructure\API\Local\Batch\AddBatch\AddBatchService:
+    public: true
+    class: AGTI\Correios\Infrastructure\API\Local\Batch\AddBatch\AddBatchService
+    arguments:
+      - '@doctrine.orm.entity_manager'
+      - '@AGTI\Correios\Application\Service\CreateConcilRowsFromFile'
+
+  
+  AGTI\Correios\Infrastructure\API\Remote\Prepostagem\CriarPrepostagem\CriarPrepostagemService:
+    public: true
+    class: AGTI\Correios\Infrastructure\API\Remote\Prepostagem\CriarPrepostagem\CriarPrepostagemService
+    parent: AGTI\Correios\Infrastructure\API\Remote\BaseService
+
+  AGTI\Correios\Infrastructure\API\Remote\Prepostagem\CriarRotulo\CriarRotuloService:
+    public: true
+    class: AGTI\Correios\Infrastructure\API\Remote\Prepostagem\CriarRotulo\CriarRotuloService
+    parent: AGTI\Correios\Infrastructure\API\Remote\BaseService
+    
+
+  AGTI\Correios\Infrastructure\API\Remote\Prepostagem\ConsultaRotulo\ConsultaRotuloService:
+    public: true
+    class: AGTI\Correios\Infrastructure\API\Remote\Prepostagem\ConsultaRotulo\ConsultaRotuloService
+    parent: AGTI\Correios\Infrastructure\API\Remote\BaseService
+    
+
+  AGTI\Correios\Infrastructure\API\Remote\Prepostagem\ConsultaRotulo:
+    public: true
+    class: AGTI\Correios\Infrastructure\API\Remote\Prepostagem\ConsultaRotulo\ConsultaRotuloService
+    parent: AGTI\Correios\Infrastructure\API\Remote\BaseService
+
+  AGTI\Correios\Infrastructure\API\Remote\Contrato\ContratoService:
+    public: true
+    class: AGTI\Correios\Infrastructure\API\Remote\Contrato\ContratoService
+    parent: AGTI\Correios\Infrastructure\API\Remote\BaseService
+        

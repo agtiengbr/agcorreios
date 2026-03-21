@@ -1,0 +1,2 @@
+parameters:
+  agti.shop_client.infrastructure.ag_shop_api.base_url: 'https://agshop.api.agti.eng.br/'

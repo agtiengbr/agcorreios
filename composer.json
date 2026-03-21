@@ -1,0 +1,13 @@
+{
+    "name": "agti/agcorreios",
+    "autoload": {
+        "psr-4": {
+            "AGTI\\Correios\\": "src/"
+        }
+    },
+    "type": "prestashop-module",
+    "config": {
+        "preferred-install": "dist",
+        "prepend-autoloader": false
+    }
+}

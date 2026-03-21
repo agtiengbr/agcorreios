@@ -1,0 +1,25 @@
+imports:
+  - { resource: local.yml }
+  - { resource: infrastructure/services.yml }
+  - { resource: application/services.yml }
+  
+services:
+  _defaults:
+      public: true
+      
+  AGTI\Correios\ValueObject\Configuration:
+    class: 'AGTI\Correios\ValueObject\Configuration'
+    factory: ['@AGTI\Correios\Infrastructure\Repository\Configuration', 'loadConfig']
+
+  agti.correios.infrastructure.serializer.serializer:
+    class: Symfony\Component\Serializer\Serializer 
+    factory: ['AGTI\Correios\Infrastructure\Serializer\Serializer', 'buildSerializer']
+
+  AGTI\Correios\ValueObject\Mappings:
+    class: AGTI\Correios\ValueObject\Mappings
+    factory: ['@AGTI\Correios\ValueObject\Configuration', 'getMappings']
+
+  AGTI\Correios\ValueObject\SenderData:
+    class: AGTI\Correios\ValueObject\SenderData
+    factory: ['@AGTI\Correios\ValueObject\Configuration', 'getSenderData']
+  

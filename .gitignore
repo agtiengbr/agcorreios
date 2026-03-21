@@ -1,0 +1,5 @@
+zips
+*.xml
+logs/CalcPrices.log
+
+/vendor/
