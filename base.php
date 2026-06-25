@@ -142,7 +142,7 @@ class BaseAgCorreios extends AgCarrierModule
     {
         $this->name     = 'agcorreios';
         $this->tab      = 'shipping_logistics';
-        $this->version  = '5.2.3';
+        $this->version  = '5.2.4';
         $this->author   = 'AGTI';
 
         $this->bootstrap = true;
@@ -803,7 +803,7 @@ class BaseAgCorreios extends AgCarrierModule
                 'carrier' => $carrier,
                 'delay' => self::getDelay($carrier->id)
             );
-            if ($this->ps17) {
+            if ($this->ps17 || $this->ps8) {
                 $price_formatter = new PrestaShop\PrestaShop\Adapter\Product\PriceFormatter();
                 $data['price'] = $price_formatter->convertAndFormat($price);
             } else {
