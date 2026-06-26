@@ -3,3 +3,5 @@ zips
 logs/CalcPrices.log
 
 /vendor/
+
+dist/
