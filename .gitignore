@@ -1,5 +1,6 @@
 zips
-*.xml
+logs/*.xml
+!config.xml
 logs/CalcPrices.log
 
 /vendor/
