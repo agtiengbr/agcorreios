@@ -2,7 +2,7 @@
 <module>
     <name>agcorreios</name>
     <displayName><![CDATA[Transportadora Correios]]></displayName>
-    <version><![CDATA[5.2.4]]></version>
+    <version><![CDATA[5.2.6]]></version>
     <description><![CDATA[Ofereça os serviços de transportadora dos Correios em sua loja.]]></description>
     <author><![CDATA[AGTI]]></author>
     <tab><![CDATA[shipping_logistics]]></tab>
