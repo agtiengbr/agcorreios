@@ -21,11 +21,13 @@ class agcorreiosRastreioModuleFrontController extends ModuleFrontController
 
             global $agti_worker;
             $agti_worker = new AgClienteWorker($id_worker);
+            $agti_worker->save();
 
             $objetos = AgCorreiosTracking::getAllToBeTracked();
             $objetosPages = $this->paginateArray($objetos,50);
 
             foreach ($objetosPages as $objetos) {
+                $agti_worker->save();
                 $module = new agcorreios;
                 $config = $module->get(VBConfiguration::class);
                 $serviceToken = $module->get(TokenRetriever::class);
@@ -71,9 +73,16 @@ class agcorreiosRastreioModuleFrontController extends ModuleFrontController
                     }
                 }
             }
-            // $agti_worker->save();
+            $agti_worker->save();
         } catch (Exception $e) {
-            dump($e);
+            PrestaShopLogger::addLog(
+                'agcorreios rastreio: ' . $e->getMessage(),
+                3,
+                null,
+                'agcorreios',
+                null,
+                true
+            );
         }
 
         exit();

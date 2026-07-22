@@ -81,6 +81,9 @@ class AgCorreiosTracking extends AgObjectModel
 
             if (is_array($tracking)) {
                 $return->hydrate($tracking);
+                if (!trim((string) $return->tracking_code)) {
+                    continue;
+                }
                 $returns[] = $return;
             }        
         }
@@ -90,14 +93,35 @@ class AgCorreiosTracking extends AgObjectModel
 
     public static function getFullTrackingEvents($trackingCode)
     {
+        $trackingCode = trim((string) $trackingCode);
+        if ($trackingCode === '') {
+            return [];
+        }
+
         $query = new DbQuery();
-        $query = $query->select('events.code,events.type,events.desc,events.created,unity.type,unity.city,unity.state')->from('agcorreios_tracking')->where('tracking_code = "'.$trackingCode.'"')
-            ->join('LEFT JOIN ' . _DB_PREFIX_ . 'agcorreios_tracking_events events ON `'._DB_PREFIX_.'agcorreios_tracking`.id_agcorreios_tracking = events.id_agcorreios_tracking')
+        $query = $query->select('events.code,events.type,events.desc,events.created,unity.type,unity.city,unity.state')->from('agcorreios_tracking')->where('tracking_code = "' . pSQL($trackingCode) . '"')
+            ->join('INNER JOIN ' . _DB_PREFIX_ . 'agcorreios_tracking_events events ON `' . _DB_PREFIX_ . 'agcorreios_tracking`.id_agcorreios_tracking = events.id_agcorreios_tracking')
             ->join('LEFT JOIN ' . _DB_PREFIX_ . 'agcorreios_unity unity ON events.id_agcorreios_unity = unity.id_agcorreios_unity')
             ->orderBy('events.created DESC');
 
         $trackings = Db::getInstance()->executeS($query);
         
-        return $trackings;
+        return is_array($trackings) ? $trackings : [];
+    }
+
+    public static function normalizeTrackingEventsForDisplay(array $events)
+    {
+        $normalized = [];
+        foreach ($events as $event) {
+            if (empty($event['desc'])) {
+                continue;
+            }
+            if (!isset($event['date_add']) && !empty($event['created'])) {
+                $event['date_add'] = $event['created'];
+            }
+            $normalized[] = $event;
+        }
+
+        return $normalized;
     }
 }

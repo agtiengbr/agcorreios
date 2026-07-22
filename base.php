@@ -142,7 +142,7 @@ class BaseAgCorreios extends AgCarrierModule
     {
         $this->name     = 'agcorreios';
         $this->tab      = 'shipping_logistics';
-        $this->version  = '5.2.6';
+        $this->version  = '5.2.7';
         $this->author   = 'AGTI';
 
         $this->bootstrap = true;
@@ -1328,26 +1328,63 @@ class BaseAgCorreios extends AgCarrierModule
     public function HookActionAdminOrdersTrackingNumberUpdate($props)
     {
         try {
-            if($props['carrier']->external_module_name == 'agcorreios'){
-                $order = $props['order'];
-                $carrier = $props['carrier'];
-
-                $trackings = \AgCorreiosTracking::getByOrder($order->id);
-            
-                foreach ($trackings as $tracking) {
-                    $tracking->finished = 1;
-                    $tracking->save();
-                }
-                $tracking = new \AgCorreiosTracking();
-                $tracking->id_order = $order->id;
-                $tracking->id_carrier = $carrier->id;
-                $tracking->tracking_code = $order->shipping_number;
-                $tracking->finished = 0;
-                $tracking->save();
+            if (!isset($props['carrier']) || $props['carrier']->external_module_name !== 'agcorreios') {
+                return;
             }
+
+            $order = $props['order'];
+            $orderCarrier = new \OrderCarrier((int) $order->getIdOrderCarrier());
+            if (!\Validate::isLoadedObject($orderCarrier)) {
+                return;
+            }
+
+            $trackingNumber = trim((string) $orderCarrier->tracking_number);
+            if ($trackingNumber !== '') {
+                return;
+            }
+
+            $this->syncAgcorreiosTrackingFromOrderCarrier($orderCarrier);
         } catch (Exception $e) {
         }
+    }
 
+    /**
+     * Fonte da verdade: OrderCarrier::tracking_number
+     */
+    protected function syncAgcorreiosTrackingFromOrderCarrier(\OrderCarrier $oc)
+    {
+        $carrier = new \Carrier((int) $oc->id_carrier);
+        if ($carrier->external_module_name !== 'agcorreios') {
+            return;
+        }
+
+        $trackingNumber = trim((string) $oc->tracking_number);
+        $trackings = \AgCorreiosTracking::getByOrder((int) $oc->id_order);
+
+        if ($trackingNumber === '') {
+            foreach ($trackings as $tracking) {
+                $tracking->finished = 1;
+                $tracking->save();
+            }
+
+            return;
+        }
+
+        foreach ($trackings as $tracking) {
+            if (trim((string) $tracking->tracking_code) !== $trackingNumber) {
+                $tracking->finished = 1;
+                $tracking->save();
+            } else {
+                return;
+            }
+        }
+
+        $tracking = new \AgCorreiosTracking();
+        $tracking->id_order = (int) $oc->id_order;
+        $tracking->id_carrier = (int) $carrier->id;
+        $tracking->tracking_code = $trackingNumber;
+        $tracking->finished = 0;
+        $tracking->save();
     }
 
     protected function renderMappingForm()
@@ -1709,34 +1746,15 @@ class BaseAgCorreios extends AgCarrierModule
         return $this->display(_PS_MODULE_DIR_ . $this->name, 'views/templates/hook/tracking_button.tpl');
     }
 
-    //tratar se não houver alteração no rastreador ou se ele já existir
     public function hookActionObjectOrderCarrierUpdateAfter($params)
     {
         try {
             $oc = $params['object'];
-            $carrier = new \Carrier($oc->id_carrier);
-
-            if($carrier->external_module_name == 'agcorreios'){
-                $trackings = \AgCorreiosTracking::getByOrder($oc->id_order);
-            
-                foreach ($trackings as $tracking) {
-                    if ($tracking->tracking_code != $oc->tracking_number) {
-                        $tracking->finished = 1;
-                        $tracking->save();
-                    } else {
-                        return;
-                    }
-                }
-
-                if ($oc->tracking_number) {
-                    $tracking = new \AgCorreiosTracking();
-                    $tracking->id_order = $oc->id_order;
-                    $tracking->id_carrier = $carrier->id;
-                    $tracking->tracking_code = $oc->tracking_number;
-                    $tracking->finished = 0;
-                    $tracking->save();
-                }
+            if (!$oc instanceof \OrderCarrier) {
+                return;
             }
+
+            $this->syncAgcorreiosTrackingFromOrderCarrier($oc);
         } catch (Exception $e) {
         }
     }
