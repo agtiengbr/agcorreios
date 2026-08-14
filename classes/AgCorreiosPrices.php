@@ -1,4 +1,10 @@
 <?php
+
+// This class is also loaded directly by front controllers and workers. Keep
+// its legacy AddressFinder dependency explicit instead of relying on the
+// module-wide loader order.
+require_once _PS_MODULE_DIR_ . 'agcliente/vendor/autoload.php';
+require_once _PS_MODULE_DIR_ . 'agcliente/lib/AddressFinder.php';
 use AgCorreios\Exceptions\OverWeightException;
 use AgCorreios\Exceptions\UnreachableAddressException;
 use AGTI\Correios\Application\Service\PrazoNacional;

@@ -142,7 +142,7 @@ class BaseAgCorreios extends AgCarrierModule
     {
         $this->name     = 'agcorreios';
         $this->tab      = 'shipping_logistics';
-        $this->version  = '5.3.0';
+        $this->version  = '5.3.1';
         $this->author   = 'AGTI';
 
         $this->bootstrap = true;
