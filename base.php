@@ -142,7 +142,7 @@ class BaseAgCorreios extends AgCarrierModule
     {
         $this->name     = 'agcorreios';
         $this->tab      = 'shipping_logistics';
-        $this->version  = '5.3.1';
+        $this->version  = '5.4.0';
         $this->author   = 'AGTI';
 
         $this->bootstrap = true;
@@ -1177,6 +1177,7 @@ class BaseAgCorreios extends AgCarrierModule
         $worker_group = AgClienteWorkerGroup::findByName('agcorreios_calc_prices');
 
         $return = [
+            'AGCORREIOS_TRACKING_REALTIME' => 0,
             'agcorreios_contract_number' => '',
             'agcorreios_contract_password' => '',
             'agcorreios_aviso_recebimento' => false,
@@ -1202,6 +1203,7 @@ class BaseAgCorreios extends AgCarrierModule
         $worker_group = AgClienteWorkerGroup::findByName('agcorreios_calc_prices');
 
         return [
+            'AGCORREIOS_TRACKING_REALTIME' => 0,
             'agcorreios_contract_number' => '',
             'agcorreios_contract_password' => '',
             'agcorreios_aviso_recebimento' => false,
@@ -1454,7 +1456,8 @@ class BaseAgCorreios extends AgCarrierModule
                 }
             }
 
-            $options['AGCORREIOS_TRACKING_EVENT_FINISHED'] = implode(", ", Tools::getValue('AGCORREIOS_TRACKING_EVENT_FINISHED_selected'));
+            $options['AGCORREIOS_TRACKING_EVENT_FINISHED'] = implode(", ", (array) Tools::getValue('AGCORREIOS_TRACKING_EVENT_FINISHED_selected', []));
+            $options['AGCORREIOS_TRACKING_REALTIME'] = Tools::getValue('AGCORREIOS_TRACKING_REALTIME') === '1' ? 1 : 0;
         
             Configuration::updateValue('AGCORREIOS', serialize($options));
         
@@ -1541,6 +1544,22 @@ class BaseAgCorreios extends AgCarrierModule
         ]);
 
 
+
+        array_unshift($inputs, [
+            'type' => 'select',
+            'label' => 'Ao acessar a página de rastreio:',
+            'name' => 'AGCORREIOS_TRACKING_REALTIME',
+            'col' => 8,
+            'options' => [
+                'id' => 'id',
+                'name' => 'name',
+                'query' => [
+                    ['id' => 1, 'name' => 'Consultar o rastreador em tempo real junto aos Correios'],
+                    ['id' => 0, 'name' => 'Exibir apenas os eventos já conhecidos pela integração'],
+                ],
+            ],
+        ]);
+        $helper->fields_value['AGCORREIOS_TRACKING_REALTIME'] = isset($options['AGCORREIOS_TRACKING_REALTIME']) && (string) $options['AGCORREIOS_TRACKING_REALTIME'] === '1' ? 1 : 0;
 
         $panels[1]['form'] = [
             'legend' => [

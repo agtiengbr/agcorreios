@@ -4,6 +4,19 @@ namespace AGTI\Correios\Infrastructure\API\Remote\Rastro\Objetos;
 
 class Objeto
 {
+    private $mensagem;
+
+    public function getMensagem()
+    {
+        return $this->mensagem;
+    }
+
+    public function setMensagem($mensagem)
+    {
+        $this->mensagem = $mensagem;
+        return $this;
+    }
+
     private $codObjeto;
     private $tipoPostal;
     private $dtPrevista;

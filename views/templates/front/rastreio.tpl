@@ -16,6 +16,10 @@
         <p><b>Código de rastreio:</b> {$trackingInfo}</p>
     </div>
 
+    {if !empty($trackingRefreshFailed)}
+        <div class="alert alert-warning" role="alert">Não foi possível atualizar o rastreamento junto aos Correios neste momento. Exibindo os eventos já conhecidos pela integração.</div>
+    {/if}
+
     <div class="orders hidden-md-up">
         {if isset($trackingEvents)}
             {foreach from=$trackingEvents item=event}

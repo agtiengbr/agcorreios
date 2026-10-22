@@ -8,6 +8,18 @@ abstract class BaseService
 {
     private $serializer;
     private $request;
+    private $requestTimeout = 0;
+
+    public function getRequestTimeout()
+    {
+        return $this->requestTimeout;
+    }
+
+    public function setRequestTimeout($seconds)
+    {
+        $this->requestTimeout = max(0, (int) $seconds);
+    }
+
     
     public function __construct(SerializerInterface $serializer)
     {
@@ -50,6 +62,10 @@ abstract class BaseService
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true
         );
+        if ($this->requestTimeout > 0) {
+            $options[CURLOPT_CONNECTTIMEOUT] = min(5, $this->requestTimeout);
+            $options[CURLOPT_TIMEOUT] = $this->requestTimeout;
+        }
         $options = ($options + $methodOptions);
 
         $curl = curl_init();
